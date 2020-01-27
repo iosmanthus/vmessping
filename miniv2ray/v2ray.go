@@ -23,7 +23,7 @@ import (
 	"v2ray.com/core/infra/conf"
 )
 
-func Vmess2Outbound(v *vmess.VmessLink) (*core.OutboundHandlerConfig, error) {
+func Vmess2OutboundConfig(v *vmess.VmessLink) *conf.OutboundDetourConfig {
 
 	out := &conf.OutboundDetourConfig{}
 	out.Tag = "proxy"
@@ -96,7 +96,12 @@ func Vmess2Outbound(v *vmess.VmessLink) (*core.OutboundHandlerConfig, error) {
   ]
 }`, v.Add, v.Port, v.ID, v.Aid)))
 	out.Settings = &oset
-	return out.Build()
+	return out
+}
+
+func Vmess2Outbound(v *vmess.VmessLink) (*core.OutboundHandlerConfig, error) {
+	config := Vmess2OutboundConfig(v)
+	return config.Build()
 }
 
 func StartV2Ray(vm string, verbose bool) (*core.Instance, error) {
@@ -157,7 +162,7 @@ func CoreHTTPRequest(inst *core.Instance, timeout time.Duration, method, dest st
 	}
 
 	tr := &http.Transport{
-		DisableKeepAlives:   true,
+		DisableKeepAlives: true,
 		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 			dest, err := v2net.ParseDestination(fmt.Sprintf("%s:%s", network, addr))
 			if err != nil {
