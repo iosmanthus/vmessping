@@ -9,5 +9,3 @@ require (
 )
 
 replace v2ray.com/core => github.com/vcptr/v2ray-core v1.24.5-0.20191214161446-3b4a4607e541
-
-replace github.com/v2fly/vmessping => github.com/iosmanthus/vmessping v0.2.4-0.20200127173456-16d19a757510
